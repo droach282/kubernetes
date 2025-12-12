@@ -83,7 +83,7 @@ func (deploymentStrategy) PrepareForCreate(ctx context.Context, obj runtime.Obje
 func (deploymentStrategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
 	deployment := obj.(*apps.Deployment)
 	opts := pod.GetValidationOptionsFromPodTemplate(&deployment.Spec.Template, nil)
-	return appsvalidation.ValidateDeployment(deployment, opts)
+	return appsvalidation.ValidateDeployment(deployment, opts).MarkCoveredByDeclarative()
 }
 
 // WarningsOnCreate returns warnings for the creation of the given object.
@@ -129,7 +129,7 @@ func (deploymentStrategy) ValidateUpdate(ctx context.Context, obj, old runtime.O
 	oldDeployment := old.(*apps.Deployment)
 
 	opts := pod.GetValidationOptionsFromPodTemplate(&newDeployment.Spec.Template, &oldDeployment.Spec.Template)
-	allErrs := appsvalidation.ValidateDeploymentUpdate(newDeployment, oldDeployment, opts)
+	allErrs := appsvalidation.ValidateDeploymentUpdate(newDeployment, oldDeployment, opts).MarkCoveredByDeclarative()
 
 	return allErrs
 }
